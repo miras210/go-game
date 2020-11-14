@@ -11,7 +11,6 @@ type Location struct {
 }
 
 func newLocation(name string) *Location {
-
 	return &Location{
 		name:      name,
 		neighbors: []*Location{},
@@ -80,6 +79,19 @@ func (p *Place) addObject(o Object) {
 	p.objects = append(p.objects, o)
 }
 
+func (p *Place) deleteObject(name string) {
+	for i, o := range p.objects {
+		if o == nil {
+			continue
+		}
+		if o.getName() == name {
+			p.objects[i] = p.objects[len(p.objects)-1]
+			p.objects[len(p.objects)-1] = nil
+			p.objects = p.objects[:len(p.objects)-1]
+		}
+	}
+}
+
 type Object interface {
 	getName() string
 }
@@ -100,7 +112,9 @@ func (i *Item) getName() string {
 	return i.name
 }
 
-func (i *Item) useItem(p Place) {}
+func (i *Item) useItem() string {
+	return "дверь открыта"
+}
 
 type Player struct {
 	cur        *Location
@@ -125,6 +139,58 @@ func (p *Player) moveto(location string) string {
 	ans := p.cur.name + ", "
 	ans += p.cur.getNeighbours()
 	return ans
+}
+
+func (p *Player) equip(e string) string {
+	for _, place := range p.cur.places {
+		for _, equipment := range place.objects {
+			if equipment == nil {
+				continue
+			}
+			if equipment.getName() == e {
+				switch equipment.(type) {
+				case *Equipment:
+					p.pEquipment = Equipment{name: e}
+					place.deleteObject(e)
+					return "вы надели: " + e
+				}
+			}
+		}
+	}
+	return "нет такого"
+}
+
+func (p *Player) getItem(i string) string {
+	for _, place := range p.cur.places {
+		for _, equipment := range place.objects {
+			if equipment == nil {
+				continue
+			}
+			if equipment.getName() == i {
+				switch equipment.(type) {
+				case *Item:
+					p.pInventory = append(p.pInventory, Item{name: i})
+					place.deleteObject(i)
+					return "предмет добавлен в инвентарь: " + i
+				}
+			}
+		}
+	}
+	return "нет такого"
+}
+
+func (p *Player) useItem(item, place string) string {
+	for _, i := range p.pInventory {
+		if i.getName() == item {
+			for _, p := range p.cur.places {
+				if p.name == place {
+					return i.useItem()
+				}
+			}
+			return "не к чему применить"
+		}
+	}
+	return "нет предмета в инвентаре - " + item
 }
 
 var player *Player
@@ -184,11 +250,11 @@ func handleCommand(command string) string {
 	case "идти":
 		return player.moveto(s[1])
 	case "надеть":
-		return "надеваю"
+		return player.equip(s[1])
 	case "взять":
-		return "беру"
+		return player.getItem(s[1])
 	case "применить":
-		return "применяю"
+		return player.useItem(s[1], s[2])
 	default:
 		return "неизвестная команда"
 	}
