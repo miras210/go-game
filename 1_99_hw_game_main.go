@@ -1,20 +1,32 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 )
 
-type Location struct {
+type Level struct {
+	locations []*Location
 	name      string
-	neighbors []*Location
-	places    []*Place
+	neighbour *Location
 }
 
-func newLocation(name string) *Location {
+type Location struct {
+	name             string
+	description      string
+	neighbors        []*Location
+	places           []*Place
+	lvlNeighbour     *Level
+	specialCondition func() string
+}
+
+func newLocation(name, description string) *Location {
 	return &Location{
-		name:      name,
-		neighbors: []*Location{},
-		places:    []*Place{},
+		name:             name,
+		neighbors:        []*Location{},
+		description:      description,
+		places:           []*Place{},
+		specialCondition: nil,
 	}
 }
 
@@ -25,6 +37,9 @@ func (l *Location) addNeighbour(n *Location) {
 func (l *Location) getNeighbours() string {
 	length := len(l.neighbors)
 	ans := "можно пройти - "
+	if l.lvlNeighbour != nil {
+		return ans + l.lvlNeighbour.name
+	}
 	for i := 0; i < length; i++ {
 		ans += l.neighbors[i].name
 		if i != length-1 {
@@ -42,18 +57,26 @@ func (l *Location) getPlaces() string {
 	ans := ""
 	length := len(l.places)
 	for i := 0; i < length; i++ {
+		if l.places[i].isEmpty() {
+			continue
+		}
 		ans += l.places[i].getObjects()
-		if i != length-1 {
+		if i != length-1 && !l.places[i+1].isEmpty() {
 			ans += ", "
 		}
+	}
+	if ans == "" {
+		return "пустая комната. "
 	}
 	ans += ". "
 	return ans
 }
 
 type Place struct {
-	name    string
-	objects []Object
+	name             string
+	objects          []Object
+	specialCondition func() (bool, string)
+	special          bool
 }
 
 func newPlace(name string) *Place {
@@ -63,9 +86,19 @@ func newPlace(name string) *Place {
 	}
 }
 
+func (p *Place) isEmpty() bool {
+	if len(p.objects) == 0 {
+		return true
+	}
+	return false
+}
+
 func (p *Place) getObjects() string {
+	if p.isEmpty() {
+		return ""
+	}
 	length := len(p.objects)
-	ans := "на " + p.name + ": "
+	ans := "на " + p.name + "е: "
 	for i := 0; i < length; i++ {
 		ans += p.objects[i].getName()
 		if i != length-1 {
@@ -116,29 +149,68 @@ func (i *Item) useItem() string {
 	return "дверь открыта"
 }
 
+type Mission struct {
+	completed func() bool
+	mission   string
+}
+
 type Player struct {
-	cur        *Location
-	pEquipment Equipment
-	pInventory []Item
+	cur         *Location
+	mission     *[]Mission
+	missionText string
+	fLocDesc    string
+	fLocName    string
+	pEquipment  Equipment
+	pInventory  []Item
 }
 
 func (p *Player) lookout() string {
-	ans := p.cur.name + ", "
-	ans += p.cur.getPlaces()
-	ans += p.cur.getNeighbours()
-	return ans
+	if p.fLocName == p.cur.name {
+		ans := p.fLocDesc
+		ans += p.cur.getPlaces()
+		ans = ans[:len(ans)-2]
+		newMissionText := ", надо "
+		for i, m := range *p.mission {
+			if !m.completed() {
+				newMissionText += m.mission
+			} else {
+				continue
+			}
+			if i != len(*p.mission)-1 {
+				newMissionText += " и "
+			}
+		}
+		newMissionText += ". "
+		ans += newMissionText
+		ans += p.cur.getNeighbours()
+		return ans
+	} else {
+		ans := p.cur.getPlaces()
+		ans += p.cur.getNeighbours()
+		return ans
+	}
 }
 
 func (p *Player) moveto(location string) string {
+	moved := false
 	for _, loc := range p.cur.neighbors {
 		if loc.name == location {
+			if loc.specialCondition != nil {
+				if loc.specialCondition() != "" {
+					return loc.specialCondition()
+				}
+			}
 			p.cur = loc
+			moved = true
 			break
 		}
 	}
-	ans := p.cur.name + ", "
-	ans += p.cur.getNeighbours()
-	return ans
+	if moved {
+		ans := p.cur.description
+		ans += p.cur.getNeighbours()
+		return ans
+	}
+	return "нет пути в " + location
 }
 
 func (p *Player) equip(e string) string {
@@ -167,6 +239,9 @@ func (p *Player) getItem(i string) string {
 				continue
 			}
 			if equipment.getName() == i {
+				if p.pEquipment.getName() == "" {
+					return "некуда класть"
+				}
 				switch equipment.(type) {
 				case *Item:
 					p.pInventory = append(p.pInventory, Item{name: i})
@@ -184,6 +259,13 @@ func (p *Player) useItem(item, place string) string {
 		if i.getName() == item {
 			for _, p := range p.cur.places {
 				if p.name == place {
+					if p.specialCondition != nil {
+						msg := ""
+						p.special, msg = p.specialCondition()
+						if p.special {
+							return msg
+						}
+					}
 					return i.useItem()
 				}
 			}
@@ -196,25 +278,29 @@ func (p *Player) useItem(item, place string) string {
 var player *Player
 
 func main() {
-	/*
-
-		сделать построчный ввод команд тут
-
-	*/
+	initGame()
+	var s string
+	for player.cur.name != "улица" {
+		//TODO SCAN COMMANDS WITH WHITESPACE
+		//just wtf, why it does not work. I hate my life :(
+		_, _ = fmt.Scanln(&s)
+		fmt.Println(handleCommand(s))
+	}
+	fmt.Println("Поздравляем! Вы прошли эту игру!")
 }
 
 func initGame() {
-	kitchen := newLocation("кухня")
+	kitchen := newLocation("кухня", "кухня, ничего интересного. ")
 	kTable := newPlace("стол")
 	tea := &Item{name: "чай"}
 	kTable.addObject(tea)
 	kitchen.addPlace(kTable)
 
-	corridor := newLocation("коридор")
+	corridor := newLocation("коридор", "ничего интересного. ")
 	door := newPlace("дверь")
 	corridor.addPlace(door)
 
-	room := newLocation("комната")
+	room := newLocation("комната", "ты в своей комнате. ")
 	rTable := newPlace("стол")
 	keys := &Item{name: "ключи"}
 	rTable.addObject(keys)
@@ -226,7 +312,7 @@ func initGame() {
 	room.addPlace(rTable)
 	room.addPlace(rChair)
 
-	street := newLocation("улица")
+	street := newLocation("улица", "на улице весна. ")
 
 	kitchen.addNeighbour(corridor)
 	room.addNeighbour(corridor)
@@ -235,10 +321,57 @@ func initGame() {
 	corridor.addNeighbour(room)
 	corridor.addNeighbour(street)
 
+	street.specialCondition = func() string {
+		if door.special == false {
+			return "дверь закрыта"
+		}
+		return ""
+	}
+
+	door.specialCondition = func() (bool, string) {
+		for _, item := range player.pInventory {
+			if item.name == "ключи" {
+				return true, "дверь открыта"
+			}
+		}
+		return false, "дверь закрыта"
+	}
+
+	home := Level{
+		locations: []*Location{},
+		name:      "домой",
+		neighbour: street,
+	}
+
+	street.lvlNeighbour = &home
+
+	mission1 := Mission{completed: func() bool {
+		for _, item := range player.pInventory {
+			if item.name == "конспекты" {
+				return true
+			}
+		}
+		return false
+	},
+		mission: "собрать рюкзак"}
+	mission2 := Mission{completed: func() bool {
+		for _, item := range player.pInventory {
+			if item.name == "ключи" && player.cur.name == "улица" {
+				return true
+			}
+		}
+		return false
+	},
+		mission: "идти в универ"}
+
 	player = &Player{
-		cur:        kitchen,
-		pEquipment: Equipment{},
-		pInventory: []Item{},
+		cur:         kitchen,
+		pEquipment:  Equipment{name: ""},
+		pInventory:  []Item{},
+		fLocDesc:    "ты находишься на кухне, ",
+		fLocName:    kitchen.name,
+		missionText: "надо " + mission1.mission + " и " + mission2.mission + ". ",
+		mission:     &[]Mission{mission1, mission2},
 	}
 }
 

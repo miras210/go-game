@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="dc05a7db-c19f-4e4d-8b4a-e7b02a17ac02" name="Default Changelist" comment="added: main lookup and move functions for user">
+    <list default="true" id="dc05a7db-c19f-4e4d-8b4a-e7b02a17ac02" name="Default Changelist" comment="added: main equip, getItem and useItem methods for player">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/1_99_hw_game_main.go" beforeDir="false" afterPath="$PROJECT_DIR$/1_99_hw_game_main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1_99_hw_game_main_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/1_99_hw_game_main_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +58,28 @@
       <recent name="C:\Users\Miras\go\src\go-game" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestGame0 in go-game (1)">
+  <component name="RunManager" selected="Go Build.go build go-game">
+    <configuration name="go build go-game" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go-game" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/1_99_hw_game_main.go" />
+      <package value="go-game" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestGame0 in go-game (1)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-game" />
+      <working_directory value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="go-game" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestGame0\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestGame0 in go-game (2)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-game" />
       <working_directory value="$PROJECT_DIR$" />
       <framework value="gotest" />
@@ -64,6 +103,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build go-game" />
+        <item itemvalue="Go Test.TestGame0 in go-game (2)" />
         <item itemvalue="Go Test.TestGame0 in go-game (1)" />
         <item itemvalue="Go Test.TestGame0 in go-game" />
       </list>
@@ -73,10 +114,23 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added: basic game structure, empty command handler" />
     <MESSAGE value="added: main lookup and move functions for user" />
-    <option name="LAST_COMMIT_MESSAGE" value="added: main lookup and move functions for user" />
+    <MESSAGE value="added: main equip, getItem and useItem methods for player" />
+    <option name="LAST_COMMIT_MESSAGE" value="added: main equip, getItem and useItem methods for player" />
   </component>
   <component name="WindowStateProjectService">
     <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1605356276566">
@@ -91,42 +145,42 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="613" y="117" key="Github.UntrackedFilesDialog/0.0.1536.824@0.0.1536.824" timestamp="1605279070880" />
-    <state width="1493" height="303" key="GridCell.Tab.0.bottom" timestamp="1605361770475">
+    <state width="1493" height="256" key="GridCell.Tab.0.bottom" timestamp="1605467147864">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="303" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605361770475" />
-    <state width="1493" height="303" key="GridCell.Tab.0.center" timestamp="1605361770475">
+    <state width="1493" height="256" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605467147864" />
+    <state width="1493" height="256" key="GridCell.Tab.0.center" timestamp="1605467147863">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="303" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1605361770475" />
-    <state width="1493" height="303" key="GridCell.Tab.0.left" timestamp="1605361770475">
+    <state width="1493" height="256" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1605467147863" />
+    <state width="1493" height="256" key="GridCell.Tab.0.left" timestamp="1605467147863">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="303" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1605361770475" />
-    <state width="1493" height="303" key="GridCell.Tab.0.right" timestamp="1605361770475">
+    <state width="1493" height="256" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1605467147863" />
+    <state width="1493" height="256" key="GridCell.Tab.0.right" timestamp="1605467147863">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="303" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1605361770475" />
-    <state width="1493" height="174" key="GridCell.Tab.1.bottom" timestamp="1605361201345">
+    <state width="1493" height="256" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1605467147863" />
+    <state width="1493" height="174" key="GridCell.Tab.1.bottom" timestamp="1605369177367">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="174" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605361201345" />
-    <state width="1493" height="174" key="GridCell.Tab.1.center" timestamp="1605361201345">
+    <state width="1493" height="174" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605369177367" />
+    <state width="1493" height="174" key="GridCell.Tab.1.center" timestamp="1605369177341">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="174" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1605361201345" />
-    <state width="1493" height="174" key="GridCell.Tab.1.left" timestamp="1605361201344">
+    <state width="1493" height="174" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1605369177341" />
+    <state width="1493" height="174" key="GridCell.Tab.1.left" timestamp="1605369177340">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="174" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1605361201344" />
-    <state width="1493" height="174" key="GridCell.Tab.1.right" timestamp="1605361201345">
+    <state width="1493" height="174" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1605369177340" />
+    <state width="1493" height="174" key="GridCell.Tab.1.right" timestamp="1605369177341">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="174" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1605361201345" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1605290669837">
+    <state width="1493" height="174" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1605369177341" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1605361920647">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1605290669837" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1605361920647" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1605286484653">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
